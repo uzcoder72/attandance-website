@@ -62,7 +62,15 @@
 
     <div class="header">
         <h2>ELT-127 Attendance Dashboard</h2>
-        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <form method="GET" action="{% url 'dashboard' %}" style="margin: 0;">
+                <input type="text" name="q" placeholder="Search student..." value="{{ search_query }}"
+                    style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                <button type="submit"
+                    style="padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+            </form>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
     </div>
 
     <div class="students-grid">

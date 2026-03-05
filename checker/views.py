@@ -26,10 +26,21 @@ def login_view(request):
             
     return render(request, 'checker/login.html', {'error': error_message})
 
+from django.db.models import Q
+
 @login_required(login_url='login')
 def dashboard_view(request):
+    # Get search query from URL if it exists
+    search_query = request.GET.get('q', '')
+    
     # Get all students and calculate their attendance
-    students = Student.objects.all()
+    if search_query:
+        # Search by name or surname (case-insensitive)
+        students = Student.objects.filter(
+            Q(name__icontains=search_query) | Q(surname__icontains=search_query)
+        )
+    else:
+        students = Student.objects.all()
     
     attendance_data = []
     
@@ -54,7 +65,8 @@ def dashboard_view(request):
         })
         
     context = {
-        'attendance_data': attendance_data
+        'attendance_data': attendance_data,
+        'search_query': search_query
     }
     
     return render(request, 'checker/dashboard.html', context)
