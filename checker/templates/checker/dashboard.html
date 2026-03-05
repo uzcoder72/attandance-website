@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard - Attendance Checker</title>
+    <!-- Importing Chart.js to draw our Pie Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* Grid layout to stack students side by side */
+        .students-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        /* Making sure the pie chart fits neatly */
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h2>ELT-127 Attendance Dashboard</h2>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="students-grid">
+        <!-- Loop through all the students we sent from views.py -->
+        {% for data in attendance_data %}
+        <div class="student-card">
+            <h4>Attendance ('{{ data.student.name }}', '{{ data.student.surname }}')</h4>
+
+            <div class="chart-container">
+                <!-- A canvas element is where Chart.js draws the graph -->
+                <canvas id="chart-{{ data.student.id }}"></canvas>
+            </div>
+
+            <p>Present: {{ data.present_pct }}% | Absent: {{ data.absent_pct }}%</p>
+
+            <script>
+                // We write a tiny script for EVERY student to draw their specific chart
+                var ctx = document.getElementById('chart-{{ data.student.id }}').getContext('2d');
+
+                // We wrap these in quotes and parseFloat so VS Code doesn't show red error lines 
+                // for the Django template tags!
+                var present = parseFloat("{{ data.present_pct }}");
+                var absent = parseFloat("{{ data.absent_pct }}");
+
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Present', 'Absent'],
+                        datasets: [{
+                            data: [present, absent],
+                            backgroundColor: ['#28a745', '#dc3545'], // Green and Red
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            </script>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

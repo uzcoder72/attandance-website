@@ -1,0 +1,12 @@
+venv/
+env/
+# Python cache files
+__pycache__/
+*.py[cod]
+# Environment variables (keeps your DB passwords safe!)
+.env
+# User-specific stuff
+.vscode/
+.idea/
+# SQLite Database (we use MySQL, but good to have anyway)
+db.sqlite3
