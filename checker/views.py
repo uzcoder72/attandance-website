@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Student
 
@@ -58,3 +58,7 @@ def dashboard_view(request):
     }
     
     return render(request, 'checker/dashboard.html', context)
+
+def custom_logout(request):
+    logout(request)
+    return redirect('login')
